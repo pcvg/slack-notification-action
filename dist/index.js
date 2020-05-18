@@ -1490,19 +1490,26 @@ const webhook_1 = __webpack_require__(976);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (process.env.SLACK_WEBHOOK_URL === undefined) {
-                throw new Error('SLACK_WEBHOOK_URL is not set');
-            }
-            const webhook = new webhook_1.IncomingWebhook(process.env.SLACK_WEBHOOK_URL);
-            if (process.env.JOB_STATUS == "Failure") {
-                var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_FAIL + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_FAIL + '","color": "danger"}]}');
-            }
-            if (process.env.JOB_STATUS == "Success") {
-                var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_SUCCESS + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_SUCCESS + '","color": "good"}]}');
-            }
-            if (process.env.JOB_STATUS == "Cancelled") {
-                var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_CANCELLED + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_CANCELLED + '","color": "warning"}]}');
-            }
+          if (process.env.SLACK_WEBHOOK_URL === undefined) {
+              throw new Error('SLACK_WEBHOOK_URL is not set');
+          }
+          const webhook = new webhook_1.IncomingWebhook(process.env.SLACK_WEBHOOK_URL);
+          switch (process.env.JOB_STATUS) {
+              case "Success":
+              case "success":
+                  var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_SUCCESS + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_SUCCESS + '","color": "good"}]}');
+                  break;
+              case "Failure":
+              case "failure":
+                  var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_FAIL + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_FAIL + '","color": "danger"}]}');
+                  break;
+              case "Cancelled":
+              case "cancelled":
+                  var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_FAIL + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_FAIL + '","color": "danger"}]}');
+                  break;
+              default:
+                  var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_FAIL + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_FAIL + '","color": "danger"}]}');
+          }
             yield webhook.send(JSON.parse(JSON.stringify(payload)));
         }
         catch (error) {

@@ -1,8 +1,5 @@
 name: slack-actions
 description: Slack notify
-inputs:
-  slack:
-    description: webook t payload
 runs:
   using: 'node12'
   main: 'dist/index.js'

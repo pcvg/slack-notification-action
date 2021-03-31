@@ -36,6 +36,7 @@ jobs:
         uses: pcvg/slack-notification-action@master
         with:
           SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
+          SLACK_FAILURE_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
           TITLE_SUCCESS: "Your build was completed successfully."
           TITLE_FAIL: "Your build failed."
           BODY_SUCCESS: "The build started by ${{ github.actor }} in API service was completed successfully"

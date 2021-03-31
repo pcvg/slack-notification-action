@@ -1,5 +1,24 @@
-name: slack-actions
-description: Slack notify
+name: slack-notification-action
+description: GitHub Action for Slack notifications
+inputs:
+  JOB_STATUS:
+    required: true
+    default: ${{ job.status }}
+  SLACK_WEBHOOK_URL:
+    required: true
+  SLACK_FAILURE_WEBHOOK_URL:
+    required: false
+  TITLE_SUCCESS:
+    required: false
+  TITLE_FAIL:
+    required: false
+  URL_WORKFLOW:
+    required: false
+    default: "https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks"
+  BODY_SUCCESS:
+    required: true
+  BODY_FAIL:
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'

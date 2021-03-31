@@ -3,23 +3,24 @@ import { IncomingWebhook } from '@slack/webhook';
 
 async function run() {
   try {
-    if (process.env.SLACK_WEBHOOK_URL === undefined) {
-      throw new Error('SLACK_WEBHOOK_URL is not set');
+    if (core.getInput('SLACK_WEBHOOK_URL') === undefined && core.getInput('SLACK_FAILURE_WEBHOOK_URL') === undefined) {
+      throw new Error('No webhook url found');
+    } else {
+      var SLACK_WEBHOOK = core.getInput('SLACK_WEBHOOK_URL');
     }
-    const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL);
-    if (process.env.JOB_STATUS == "Failure") {
-      var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_FAIL + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_FAIL + '","color": "danger"}]}');
+    if (core.getInput('JOB_STATUS') != "success") {
+        if (core.getInput('SLACK_FAILURE_WEBHOOK_URL')) {
+          var SLACK_WEBHOOK = core.getInput('SLACK_FAILURE_WEBHOOK_URL');
+        }
+        var payload = eval("payload = " + '{ "attachments": [{"title": "' + core.getInput('TITLE_FAIL') + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + core.getInput('BODY_FAIL') + '","color": "danger"}]}');
+    } else {
+        var payload = eval("payload = " + '{ "attachments": [{"title": "' + core.getInput('TITLE_SUCCESS') + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + core.getInput('BODY_SUCCESS') + '","color": "good"}]}');
     }
-    if (process.env.JOB_STATUS == "Success") {
-      var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_SUCCESS + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_SUCCESS + '","color": "good"}]}');
-    }
-    if (process.env.JOB_STATUS == "Cancelled") {
-      var payload = eval("payload = " + '{ "attachments": [{"title": "' + process.env.TITLE_MSG_CANCELLED + '","title_link": "' + process.env.URL_WORKFLOW + '","text": "' + process.env.FOOTER_MSG_CANCELLED + '","color": "warning"}]}');
-    }
+    const webhook = new IncomingWebhook(SLACK_WEBHOOK);
     await webhook.send(JSON.parse(JSON.stringify(payload)));
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+    }
+    catch (error) {
+        core.setFailed(error.message);
+    }
 }
-
 run();

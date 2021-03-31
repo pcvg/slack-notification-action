@@ -8,14 +8,14 @@ Run this action in Github Actions by adding `pcvg/slack-notification-action@mast
 
 ### Parameters
 
-| Name                   | Meaning                                                        | Default | Required  | 
-| ---                    | ---                                                            | ---     | ---   | 
-| `SLACK_WEBHOOK_URL`    | Default webhook             | X       | true |  
-| `SLACK_FAILURE_WEBHOOK_URL`    | Webhook in case of failure and cancellation     | `SLACK_WEBHOOK_URL`       | false |  
-| `TITLE_SUCCESS`    | Title of the message in case of success               | X       | false |  
-| `TITLE_FAIL`    | Title of the message in case of fail                    | X       | false | 
-| `BODY_SUCCESS`    | Message content in case of success                  | X       | true |
-| `BODY_FAIL`    | Message content in case of fail                     | X       | true |
+| Name                         | Meaning                                       | Default            | Required  | 
+| ---                          | ---                                           | ---                | ---   | 
+| `SLACK_WEBHOOK_URL`          | Default webhook                               | X                  | true |  
+| `SLACK_FAILURE_WEBHOOK_URL`  | Webhook in case of failure and cancellation   | `SLACK_WEBHOOK_URL`| false |  
+| `TITLE_SUCCESS`              | Title of the message in case of success       | X                  | false |  
+| `TITLE_FAIL`                 | Title of the message in case of fail          | X                  | false | 
+| `BODY_SUCCESS`               | Message content in case of success            | X                  | true |
+| `BODY_FAIL`                  | Message content in case of fail               | X                  | true |
 
 ### Example - How to use?
 

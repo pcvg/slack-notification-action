@@ -3241,7 +3241,7 @@ const webhook_1 = __nccwpck_require__(1095);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (core.getInput('SLACK_WEBHOOK_URL') === undefined && core.getInput('SLACK_FAILURE_WEBHOOK_URL') === undefined) {
+            if (core.getInput('SLACK_WEBHOOK_URL') === undefined) {
                 throw new Error('No webhook url found');
             }
             else {

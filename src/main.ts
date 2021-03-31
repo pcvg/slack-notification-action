@@ -3,7 +3,7 @@ import { IncomingWebhook } from '@slack/webhook';
 
 async function run() {
   try {
-    if (core.getInput('SLACK_WEBHOOK_URL') === undefined && core.getInput('SLACK_FAILURE_WEBHOOK_URL') === undefined) {
+    if (core.getInput('SLACK_WEBHOOK_URL') === undefined) {
       throw new Error('No webhook url found');
     } else {
       var SLACK_WEBHOOK = core.getInput('SLACK_WEBHOOK_URL');

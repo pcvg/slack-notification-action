@@ -4,7 +4,7 @@ Send custom notifications to Slack from Github Actions. You can define the conte
 
 ## 🚀 Running in GitHub Actions
 
-Run this action in Github Actions by adding `pcvg/slack-notification-action@master` to your steps.
+Run this action in Github Actions by adding `pcvg/slack-notification-action@main` to your steps.
 
 ### Parameters
 
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Notify
         if: always()
-        uses: pcvg/slack-notification-action@master
+        uses: pcvg/slack-notification-action@main
         with:
           SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
           SLACK_FAILURE_WEBHOOK_URL: https://hooks.slack.com/services/XXXX

@@ -17,9 +17,9 @@ async function run() {
         if (core.getInput('SLACK_FAILURE_WEBHOOK_URL')) {
           var SLACK_WEBHOOK = core.getInput('SLACK_FAILURE_WEBHOOK_URL');
         }
-        var payload = eval("payload = " + '{ "attachments": [{"title": "' + core.getInput('TITLE_FAIL') + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + core.getInput('BODY_FAIL') + '","color": "danger"}]}');
+        var payload = eval("payload = " + '{ "attachments": [{"title": "' + escapeCode(core.getInput('TITLE_FAIL')) + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + escapeCode(core.getInput('BODY_FAIL')) + '","color": "danger"}]}');
     } else {
-        var payload = eval("payload = " + '{ "attachments": [{"title": "' + core.getInput('TITLE_SUCCESS') + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + escapeCode(core.getInput('BODY_SUCCESS')) + '","color": "good"}]}');
+        var payload = eval("payload = " + '{ "attachments": [{"title": "' + escapeCode(core.getInput('TITLE_SUCCESS')) + '","title_link": "' + core.getInput('URL_WORKFLOW') + '","text": "' + escapeCode(core.getInput('BODY_SUCCESS')) + '","color": "good"}]}');
     }
     const webhook = new IncomingWebhook(SLACK_WEBHOOK);
     await webhook.send(JSON.parse(JSON.stringify(payload)));

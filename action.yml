@@ -20,5 +20,5 @@ inputs:
   BODY_FAIL:
     required: true
 runs:
-  using: 'node22'
+  using: 'node24'
   main: 'dist/index.js'

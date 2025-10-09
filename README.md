@@ -65,5 +65,24 @@ Run tests:
 
             $ Coming soon!
 
+Local testing:
+
+```sh
+INPUT_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
+INPUT_SLACK_FAILURE_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
+INPUT_JOB_STATUS='success' \
+INPUT_TITLE_SUCCESS='Build Success' \
+INPUT_BODY_SUCCESS='Your build completed successfully!' \
+INPUT_URL_WORKFLOW='https://github.com/test/repo/actions/runs/123' \
+  node dist/index.js
+
+INPUT_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
+INPUT_SLACK_FAILURE_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
+INPUT_TITLE_FAIL='Build Failed' \
+INPUT_BODY_FAIL='Your build failed. Please check the logs.' \
+INPUT_URL_WORKFLOW='https://github.com/test/repo/actions/runs/123' \
+  node dist/index.js
+```
+
 ## ⚖️ License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details

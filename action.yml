@@ -19,6 +19,12 @@ inputs:
     required: true
   BODY_FAIL:
     required: true
+  MSG_COLOR_SUCCESS:
+    required: false
+    default: 'good'
+  MSG_COLOR_FAIL:
+    required: false
+    default: 'danger'
 runs:
   using: 'node24'
   main: 'dist/index.js'

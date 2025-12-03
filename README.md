@@ -8,16 +8,13 @@ Run this action in Github Actions by adding `pcvg/slack-notification-action@main
 
 ### Parameters
 
-| Name                         | Meaning                                                                                                                                                         | Default             | Required   | 
-| ---                          |-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|------------| 
-| `SLACK_WEBHOOK_URL`          | Default webhook                                                                                                                                                 | X                   | true       |  
-| `SLACK_FAILURE_WEBHOOK_URL`  | Webhook in case of failure and cancellation                                                                                                                     | `SLACK_WEBHOOK_URL` | false      |  
-| `TITLE_SUCCESS`              | Title of the message in case of success                                                                                                                         | X                   | false      |  
-| `TITLE_FAIL`                 | Title of the message in case of fail                                                                                                                            | X                   | false      | 
-| `BODY_SUCCESS`               | Message content in case of success                                                                                                                              | X                   | true       |
-| `BODY_FAIL`                  | Message content in case of fail                                                                                                                                 | X                   | true       |
-| `MSG_COLOR_SUCCESS`          | Color of the border on the left side of this attachment. Can either be one of good (green), warning (yellow), danger (red), or any hex color code (eg. #99c3ff) | good                | false      |
-| `MSG_COLOR_FAIL`             | Color of the border on the left side of this attachment. Can either be one of good (green), warning (yellow), danger (red), or any hex color code (eg. #f99)    | danger              | false      |
+| Name                | Meaning                                                                                             | Default                                                                       | Required | 
+|---------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|----------| 
+| `SLACK_WEBHOOK_URL` | Default webhook                                                                                     | X                                                                             | true     |
+| `NOTIFICATION_TYPE` | Type of the notification. Available values: `success`, `warning`, `failure`, `information`, `debug` | information                                                                   | false    | 
+| `TITLE`             | Title of the message                                                                                | X                                                                             | false    | 
+| `BODY`              | Message content                                                                                     | X                                                                             | true     |
+| `URL_WORKFLOW`      | Link to workflow run                                                                                | `https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks` | false    |
 
 ### Example - How to use?
 
@@ -29,28 +26,54 @@ on:
       - main
   
 jobs:
+  some-job:
+    runs-on: ubuntu-latest
+    steps:
+      run: exit 0
+
   slack-notify:
+    needs: [some-job]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Notify
-        if: always()
+        if: success()
         uses: pcvg/slack-notification-action@main
         with:
+          NOTIFICATION_TYPE: ${{ needs.some-job.status }}
           SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
-          SLACK_FAILURE_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
-          TITLE_SUCCESS: "Your build was completed successfully."
-          TITLE_FAIL: "Your build failed."
-          MSG_COLOR_SUCCESS: "#99c3ff"
-          BODY_SUCCESS: "The build started by ${{ github.actor }} in API service was completed successfully"
+          TITLE: ""
+          BODY: ${{ env.SLACK_MSG }}
+
+  slack-notify-success:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Notify
+        if: success()
+        uses: pcvg/slack-notification-action@main
+        with:
+          NOTIFICATION_TYPE: 'success'
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
+          TITLE: "Your build was completed successfully."
+          BODY: "The build started by ${{ github.actor }} in API service was completed successfully"  
+
+  slack-notify-fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Notify
+        if: failure()
+        uses: pcvg/slack-notification-action@main
+        with:
+          NOTIFICATION_TYPE: 'failure'
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXXX
+          TITLE: "Your build failed."
           BODY_FAIL: "Failed - ${{ github.actor }}'s build failed - <https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks|${{ github.repository }}>"
-          MSG_COLOR_FAIL: "#f99"
 ```
 
 ### Considerations
 
-- `SLACK_WEBHOOK_URL` will be used as failure and success webhook if `SLACK_FAILURE_WEBHOOK_URL` is not defined.
-- `SLACK_FAILURE_WEBHOOK_URL` it is used when the workflow fails or is canceled.
 - You can get the webhook URL from [Slack Apps](https://app.slack.com/apps-manage/)
 
 ## ⚙️ Local dev
@@ -73,20 +96,10 @@ Local testing:
 
 ```sh
 INPUT_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
-INPUT_SLACK_FAILURE_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
-INPUT_JOB_STATUS='success' \
-INPUT_TITLE_SUCCESS='Build Success' \
-INPUT_BODY_SUCCESS='Your build completed successfully!' \
+NOTIFICATION_TYPE='debug' \
+INPUT_TITLE='Build Success' \
+INPUT_BODY='Your build completed successfully!' \
 INPUT_URL_WORKFLOW='https://github.com/test/repo/actions/runs/123' \
-INPUT_MSG_COLOR_SUCCESS='#99c3ff' \
-  node dist/index.js
-
-INPUT_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
-INPUT_SLACK_FAILURE_WEBHOOK_URL='https://hooks.slack.com/services/XXXX' \
-INPUT_TITLE_FAIL='Build Failed' \
-INPUT_BODY_FAIL='Your build failed. Please check the logs.' \
-INPUT_URL_WORKFLOW='https://github.com/test/repo/actions/runs/123' \
-INPUT_MSG_COLOR_FAIL='#f99' \
   node dist/index.js
 ```
 

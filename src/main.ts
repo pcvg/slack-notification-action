@@ -5,11 +5,6 @@ function escapeCode(value: string) {
   return value.replace('"', '\"').replace("'", "\'").replace("`", "\`");
 }
 
-function isValidAttachmentsColor(hexColor: string): boolean {
-  const hexRegex = /^(#?[0-9a-fA-F]{3}|#?[0-9a-fA-F]{6}|danger|warning|good)$/;
-  return hexRegex.test(hexColor);
-}
-
 async function run() {
   try {
     let SLACK_WEBHOOK = core.getInput('SLACK_WEBHOOK_URL');
@@ -17,25 +12,26 @@ async function run() {
       throw new Error('No webhook url found');
     }
 
-    const isSuccess = core.getInput('JOB_STATUS') === 'success';
+    const colorMap: Record<string, string> = {
+      success: 'good',
+      warning: 'warning',
+      failure: 'danger',
+      information: '#2196F3',
+      debug: '#808080'
+    };
+
     let color: string;
     let title: string;
     let body: string;
 
-    if (!isSuccess) {
-      if (core.getInput('SLACK_FAILURE_WEBHOOK_URL')) {
-        SLACK_WEBHOOK = core.getInput('SLACK_FAILURE_WEBHOOK_URL');
-      }
-      const colorInput = core.getInput('MSG_COLOR_FAIL');
-      color = isValidAttachmentsColor(colorInput) ? colorInput : 'danger';
-      title = core.getInput('TITLE_FAIL');
-      body = core.getInput('BODY_FAIL');
-    } else {
-      const colorInput = core.getInput('MSG_COLOR_SUCCESS');
-      color = isValidAttachmentsColor(colorInput) ? colorInput : 'good';
-      title = core.getInput('TITLE_SUCCESS');
-      body = core.getInput('BODY_SUCCESS');
+    const notificationType = core.getInput('NOTIFICATION_TYPE').trim().toLowerCase();
+    color = colorMap[notificationType] ?? colorMap['information'];
+    
+    if (!colorMap[notificationType]) {
+      core.warning(`Unknown NOTIFICATION_TYPE: "${core.getInput('NOTIFICATION_TYPE')}". Using default color.`);
     }
+    title = core.getInput('TITLE');
+    body = core.getInput('BODY');
 
     const payload = {
       attachments: [{

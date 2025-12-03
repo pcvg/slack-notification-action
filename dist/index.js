@@ -29318,35 +29318,29 @@ const webhook_1 = __nccwpck_require__(4443);
 function escapeCode(value) {
     return value.replace('"', '\"').replace("'", "\'").replace("`", "\`");
 }
-function isValidAttachmentsColor(hexColor) {
-    const hexRegex = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|danger|warning|good)$/;
-    return hexRegex.test(hexColor);
-}
 async function run() {
     try {
         let SLACK_WEBHOOK = core.getInput('SLACK_WEBHOOK_URL');
         if (!SLACK_WEBHOOK) {
             throw new Error('No webhook url found');
         }
-        const isSuccess = core.getInput('JOB_STATUS') === 'success';
+        const colorMap = {
+            success: 'good',
+            warning: 'warning',
+            failure: 'danger',
+            information: '#2196F3',
+            debug: '#808080'
+        };
         let color;
         let title;
         let body;
-        if (!isSuccess) {
-            if (core.getInput('SLACK_FAILURE_WEBHOOK_URL')) {
-                SLACK_WEBHOOK = core.getInput('SLACK_FAILURE_WEBHOOK_URL');
-            }
-            const colorInput = core.getInput('MSG_COLOR_FAIL');
-            color = isValidAttachmentsColor(colorInput) ? colorInput : 'danger';
-            title = core.getInput('TITLE_FAIL');
-            body = core.getInput('BODY_FAIL');
+        const notificationType = core.getInput('NOTIFICATION_TYPE').trim().toLowerCase();
+        color = colorMap[notificationType] ?? colorMap['information'];
+        if (!colorMap[notificationType]) {
+            core.warning(`Unknown NOTIFICATION_TYPE: "${core.getInput('NOTIFICATION_TYPE')}". Using default color.`);
         }
-        else {
-            const colorInput = core.getInput('MSG_COLOR_SUCCESS');
-            color = isValidAttachmentsColor(colorInput) ? colorInput : 'good';
-            title = core.getInput('TITLE_SUCCESS');
-            body = core.getInput('BODY_SUCCESS');
-        }
+        title = core.getInput('TITLE');
+        body = core.getInput('BODY');
         const payload = {
             attachments: [{
                     title: escapeCode(title),

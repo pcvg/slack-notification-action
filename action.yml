@@ -1,30 +1,17 @@
 name: slack-notification-action
 description: GitHub Action for Slack notifications
 inputs:
-  JOB_STATUS:
-    required: true
-    default: ${{ job.status }}
   SLACK_WEBHOOK_URL:
     required: true
-  SLACK_FAILURE_WEBHOOK_URL:
+  NOTIFICATION_TYPE:
+    required: true
+  TITLE:
     required: false
-  TITLE_SUCCESS:
-    required: false
-  TITLE_FAIL:
-    required: false
+  BODY:
+    required: true
   URL_WORKFLOW:
     required: false
     default: "https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks"
-  BODY_SUCCESS:
-    required: true
-  BODY_FAIL:
-    required: true
-  MSG_COLOR_SUCCESS:
-    required: false
-    default: 'good'
-  MSG_COLOR_FAIL:
-    required: false
-    default: 'danger'
 runs:
   using: 'node24'
   main: 'dist/index.js'

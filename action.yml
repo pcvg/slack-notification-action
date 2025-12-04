@@ -4,7 +4,8 @@ inputs:
   SLACK_WEBHOOK_URL:
     required: true
   NOTIFICATION_TYPE:
-    required: true
+    required: false
+    default: success
   TITLE:
     required: false
   BODY:

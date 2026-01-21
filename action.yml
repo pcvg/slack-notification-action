@@ -2,15 +2,20 @@ name: slack-notification-action
 description: GitHub Action for Slack notifications
 inputs:
   SLACK_WEBHOOK_URL:
+    description: ""
     required: true
   NOTIFICATION_TYPE:
+    description: ""
     required: false
     default: success
   TITLE:
+    description: ""
     required: false
   BODY:
+    description: ""
     required: true
   URL_WORKFLOW:
+    description: ""
     required: false
     default: "https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks"
 runs:
